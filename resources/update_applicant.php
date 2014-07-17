@@ -16,8 +16,12 @@
 
 	
 	//get variable
-	$email = $_POST["emailLogin"];  //receives content from email field in gateway page
-	$password =$_POST["passwordLogin"];  //receives content from password field in gateway page
+	/*$email = $_POST["emailLogin"];  //receives content from email field in gateway page
+	$password =$_POST["passwordLogin"];  //receives content from password field in gateway page*/
+	$email = mysqli_real_escape_string($con, $_POST["emailLogin"]);
+	// $password = mysqli_real_escape_string($con, $_POST["passwordLogin"]);
+	$password = openssl_digest(mysqli_real_escape_string($con, $_POST['passwordLogin']),'sha512');
+
 	/*echo "$password=".sha1($password);
 	echo "<br/>email=".$email;*/// This echo clause is for debug.
 	$result = mysqli_query($con,"SELECT * FROM Apprentices2 Where email='$email'");  //sql where statements must be wrapped in apostrophe. If $email exits, return the whole row data.
@@ -28,7 +32,7 @@
 		
 		// var_dump($res);// This echo clause is for debug.
 		// echo "in if";// This echo clause is for debug.
-		if ($row['password']==sha1($password)) {
+		if ($row['password']==$password) {
 			// Password is correct.
 			// echo "Password is correct";// This echo clause is for debug.
 			if ($row['status']==1) {
@@ -49,15 +53,11 @@
 				echo "<td>" . $row['lName'] . "</td>";
 				echo "<td>" . $row['email'] . "</td>";
 				echo "<td>" . 'Not visibale' . "</td>";
-				if($row['status']==0){
-					echo"<td>incomplete</td>";
-					}elseif($row['status']==1){
-						echo "<td>complete</td>";
-					}
+				echo "<td>complete</td>";				
 				echo "</tr>";*/
 				mysqli_close($con);
 				echo '<p><a href="../index.php">Click here to go to gateway</a></p>';
-				echo "<p><a href=\"select.php?email=$email\">Click here to view table</a></p>";
+				echo "<p><a href='select.php?email=$email'>Click here to view table</a></p>";
 				
 			}else{
 				// echo "status doen't complete";

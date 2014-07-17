@@ -13,7 +13,7 @@ if(mysqli_connect_errno()){
 $firstName = mysqli_real_escape_string($con, $_POST['fName']);
 $lastName = mysqli_real_escape_string($con, $_POST['lName']);
 $email = mysqli_real_escape_string($con, $_POST['email']);
-$password = mysqli_real_escape_string($con, $_POST['password']);
+$password = openssl_digest(mysqli_real_escape_string($con, $_POST['password']),'sha512');
 
 
 $sqlDup = "SELECT * FROM Apprentices2 Where email='$email' /*AND password='$password'*/";  //commented out section implements addition password security if needed
@@ -34,7 +34,7 @@ if($dupCount>0){
 	echo "A user with this email address and password has already enrolled";
 }else{
 $sql = "INSERT INTO Apprentices2 (fName, lName, email, password, status) 
-VALUES('$firstName', '$lastName', '$email', sha1('$password'), '$status')";
+VALUES('$firstName', '$lastName', '$email', '$password', '$status')";
 
 
 
